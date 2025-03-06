@@ -6,6 +6,6 @@
   
   <main>
     <Header />
-    <SearchFilter />
-    <UserList />
+ <SearchFilter /> 
+    <UserList /> 
   </main>

@@ -1,5 +1,5 @@
 <script>
-  import { users } from '/src/stores/users.js';
+import {users} from '../stores/users.js';
   import { searchTerm, filterStatus } from '../stores/filter.js';
   import UserCard from './UserCard.svelte';
   import { fly } from 'svelte/transition';
@@ -7,22 +7,43 @@
 
   let filteredUsers = [];
   let userList = [];
+  let search = '';
+  let status = 'All';
 
-  const unsubscribe = users.subscribe(value => {
+  // Subscribe to stores
+  const unsubscribeUsers = users.subscribe(value => {
     userList = value;
   });
 
+  const unsubscribeSearchTerm = searchTerm.subscribe(value => {
+    search = value.toLowerCase();
+  });
+
+  const unsubscribeFilterStatus = filterStatus.subscribe(value => {
+    status = value;
+  });
+
+  // Reactive statement
   $: filteredUsers = userList.filter(user => {
-    const search = $searchTerm.toLowerCase();
-    const status = $filterStatus;
     const nameMatch = user.name.toLowerCase().includes(search);
     const statusMatch = status === 'All' || user.status === status;
     return nameMatch && statusMatch;
   });
 
+  // Cleanup on destroy
   onDestroy(() => {
-    unsubscribe();
+    unsubscribeUsers();
+    unsubscribeSearchTerm();
+    unsubscribeFilterStatus();
   });
 
-  console.log(import.meta.resolve('../stores/users.js')); 
+  // ใช้ new URL() แทน import.meta.resolve()
+  console.log(new URL('../stores/users.js', import.meta.url).href);
 </script>
+
+<!-- แสดงรายการผู้ใช้ -->
+{#each filteredUsers as user (user.id)}
+  <div transition:fly={{ y: 20, duration: 300 }}>
+    <UserCard {user} />
+  </div>
+{/each}
