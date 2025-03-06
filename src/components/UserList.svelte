@@ -1,5 +1,5 @@
 <script>
-  import { users } from '../stores/users.js';
+  import { users } from '/src/stores/users.js';
   import { searchTerm, filterStatus } from '../stores/filter.js';
   import UserCard from './UserCard.svelte';
   import { fly } from 'svelte/transition';
